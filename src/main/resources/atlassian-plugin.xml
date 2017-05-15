@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<atlassian-plugin key="${atlassian.plugin.key}" name="${project.name}" plugins-version="2">
+  <plugin-info>
+    <description>${project.description}</description>
+    <version>${project.version}</version>
+    <vendor name="${project.organization.name}" url="${project.organization.url}"/>
+    <param name="plugin-icon">images/pluginIcon.png</param>
+    <param name="plugin-logo">images/pluginLogo.png</param>
+  </plugin-info>
+  <!-- add our i18n resource -->
+  <resource type="i18n" name="i18n" location="jira"/>
+  <!-- add our web resources -->
+  <web-resource key="jira-resources" name="jira Web Resources">
+    <dependency>com.atlassian.auiplugin:ajs</dependency>
+    <resource type="download" name="jira.css" location="/css/jira.css"/>
+    <resource type="download" name="jira.js" location="/js/jira.js"/>
+    <resource type="download" name="select2.css" location="/css/select2.css"/>
+    <resource type="download" name="select2.js" location="/js/select2.js"/>
+    <resource type="download" name="images/" location="/images"/>
+    <context>jira</context>
+  </web-resource>
+  <customfield-type name="emtc Field" i18n-name-key="emtc-field.name" key="emtc-field" class="com.pactera.emtc.jira.customfields.emtcField">
+    <description key="emtc-field.description">The EMTC Order Plugin</description>
+    <resource name="view" type="velocity" location="/templates/customfields/emtc-field/view.vm"/>
+    <resource name="edit" type="velocity" location="/templates/customfields/emtc-field/edit.vm"/>
+  </customfield-type>
+  <servlet name="Emtc Server" i18n-name-key="emtc-server.name" key="emtc-server" class="com.pactera.emtc.servlet.EmtcServer">
+    <description key="emtc-server.description">The Emtc Server Plugin</description>
+    <url-pattern>/emtcserver</url-pattern>
+  </servlet>
+  <customfield-type name="Equipment" i18n-name-key="equipment.name" key="equipment" class="com.pactera.emtc.jira.customfields.Equipment">
+    <description key="equipment.description">The EMTC Equipment Plugin</description>
+    <resource name="view" type="velocity" location="/templates/customfields/equipment/view.vm"/>
+    <resource name="edit" type="velocity" location="/templates/customfields/equipment/edit.vm"/>
+  </customfield-type>
+  <customfield-type name="Severity" i18n-name-key="severity.name" key="severity" class="com.pactera.emtc.jira.customfields.Severity">
+    <description key="severity.description">The Severity Plugin</description>
+    <resource name="view" type="velocity" location="/templates/customfields/severity/view.vm"/>
+    <resource name="edit" type="velocity" location="/templates/customfields/severity/edit.vm"/>
+  </customfield-type>
+</atlassian-plugin>

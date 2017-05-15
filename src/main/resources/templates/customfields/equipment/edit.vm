@@ -1,0 +1,70 @@
+#controlHeader ($action $customField.id $customField.name $fieldLayoutItem.required $displayParameters.noHeader)
+<input type="hidden" name="$customField.id" id="$customField.id" class="select equipment" value="$!value"/>
+<script>
+    AJS.$(document).ready(function() {
+        var fieldValue = "$!value";
+        var fieldId = "$customField.id";
+
+        runJS();
+        JIRA.bind(JIRA.Events.NEW_CONTENT_ADDED, function (e,context) {
+            runJS();
+        });
+
+        AJS.$("input.orderid").change(function(){
+            AJS.$("input.equipment").val("");
+            runJS();
+        });
+
+        function runJS() {
+            #set($D = '$')
+            if(typeof AJS.$(".equipment").select2 != "function"){
+                AJS.${D}.getScript("${req.getContextPath()}/download/resources/com.pactera.emtc.jira:jira-resources/select2.js",function(){
+                    select();
+                });
+            }else{
+                select();
+            }
+
+            function select(){
+                AJS.$(".equipment").select2({
+                    placeholder:"请选择",
+                    ajax:{
+                        quietMillis   : 500,
+                        url     : "${req.getContextPath()}/plugins/servlet/emtcserver",
+                        dataType : 'json',
+                        type    : "post",
+                        data    : function(param,page){
+                            return {
+                                method : "equipmentList",
+                                search  : param,
+                                orderid : AJS.$("input.orderid").val() ,
+                            }
+                        },
+                        results : function(data,params){
+                            if(data.status){
+                                return {results:data.data};
+                            }else{
+                                alert(data.err);
+                            }
+                        }
+                    },
+                    initSelection: function (element, callback) {
+                        var id = AJS.$(element).val();
+                        if(id){
+                            AJS.${D}.post("${req.getContextPath()}/plugins/servlet/emtcserver",{method:"equipmentName",equipmentid:fieldValue},function(data){
+                                var data = eval('(' +data+')' );
+                                if(data.status){
+                                    callback({ id: id, text: data.data });
+                                }else{
+                                    alert("error message ："+data.err);
+                                }
+                            });
+                        }
+                    }
+                });
+            }
+        }
+    });
+</script>
+
+#controlFooter ($action $fieldLayoutItem.fieldDescription $displayParameters.noHeader)

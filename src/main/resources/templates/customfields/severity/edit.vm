@@ -1,0 +1,8 @@
+#controlHeader ($action $customField.id $customField.name $fieldLayoutItem.required $displayParameters.noHeader)
+<select name="$customField.id" class="select" id="$customField.id">
+    <option value="1" #if($value==1) selected #end>严重</option>
+    <option value="2" #if($value==2) selected #end>比较严重</option>
+    <option value="3" #if($value==3) selected #end>一般</option>
+    <option value="4" #if($value==4) selected #end>轻微</option>
+</select>
+#controlFooter ($action $fieldLayoutItem.fieldDescription $displayParameters.noHeader)

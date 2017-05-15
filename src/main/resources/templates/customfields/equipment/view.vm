@@ -1,0 +1,15 @@
+<span class="equipment-view" data-id="$!value"></span>
+<script>
+    AJS.$(document).ready(function() {
+        var fieldValue = "$!value";
+        #set($D = '$')
+        AJS.${D}.post("${req.getContextPath()}/plugins/servlet/emtcserver",{method:"equipmentName",equipmentid:fieldValue},function(data){
+            var data = eval('(' +data+')' );
+            if(data.status){
+                AJS.$(".equipment-view").text(data.data);
+            }else{
+                alert("error message ："+data.err);
+            }
+        });
+    });
+</script>

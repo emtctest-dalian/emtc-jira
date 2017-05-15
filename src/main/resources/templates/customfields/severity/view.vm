@@ -1,0 +1,26 @@
+<span class="severity-view" data-id="$!value"></span>
+<script>
+    AJS.$(document).ready(function() {
+        var fieldValue = parseInt("$!value");
+        var fieldName = "";
+        switch (fieldValue){
+            case 1:
+                fieldName = "严重";
+                break;
+            case 2:
+                fieldName = "比较严重";
+                break;
+            case 3:
+                fieldName = "一般";
+                break;
+            case 4:
+                fieldName = "轻微";
+                break;
+        }
+        //不加setTimeout，有时无法显示状态
+        setTimeout(function(){
+            AJS.$(".severity-view").html(fieldName);
+        }, 1000)
+
+    });
+</script>

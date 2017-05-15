@@ -1,0 +1,82 @@
+#controlHeader ($action $customField.id $customField.name $fieldLayoutItem.required $displayParameters.noHeader)
+##<input type="text" class="text" name="$customField.id" value="$!value" />
+<link href="${req.getContextPath()}/download/resources/com.pactera.emtc.jira:jira-resources/select2.css" rel="stylesheet">
+<input type="hidden" name="$customField.id" id="$customField.id" class="select orderid" value="$!value"/>
+<script>
+    AJS.$(document).ready(function() {
+        var fieldValue = "$!value";
+        var fieldId = "$customField.id";
+        if(fieldValue){
+            #set($D = '$')
+            AJS.${D}.post("${req.getContextPath()}/plugins/servlet/emtcserver",{method:"orderName",orderid:fieldValue},function(data){
+                var data = eval('(' +data+')' );
+                if(data.status){
+                    AJS.$("#"+fieldId).after('<input type="text" class="text" name="orderName" value="'+data.data+'" readonly />');
+                }else{
+                    alert("error message ："+data.err);
+                }
+            });
+
+        }else{
+            runJS();
+            JIRA.bind(JIRA.Events.NEW_CONTENT_ADDED, function (e,context) {
+                runJS();
+            });
+            function runJS() {
+                var pid = AJS.$("input[name=pid]").val() || 0 ;
+                var projectName =   AJS.$("#project-name-val").attr("href") || "";
+                #set($D = '$')
+
+                if(typeof AJS.$(".orderid").select2 != "function"){
+                    AJS.${D}.getScript("${req.getContextPath()}/download/resources/com.pactera.emtc.jira:jira-resources/select2.js",function(){
+                        select();
+                    });
+                }else{
+                    select();
+                }
+
+                function select(){
+                    AJS.$(".orderid").select2({
+                        placeholder:"请选择",
+                        ajax:{
+                            quietMillis   : 500,
+                            url     : "${req.getContextPath()}/plugins/servlet/emtcserver",
+                            dataType : 'json',
+                            type    : "post",
+                            data    : function(param,page){
+                                return {
+                                    method : "orderList",
+                                    search  : param,
+                                    projectName : projectName,
+                                    pid     : pid
+                                }
+                            },
+                            results : function(data,params){
+                                if(data.status){
+                                    return {results:data.data};
+                                }else{
+                                    alert(data.err);
+                                }
+                            }
+                        },
+                        initSelection: function (element, callback) {
+                            var id = AJS.$(element).val();
+                            if(id){
+                                AJS.${D}.post("${req.getContextPath()}/plugins/servlet/emtcserver",{method:"orderName",orderid:fieldValue},function(data){
+                                    var data = eval('(' +data+')' );
+                                    if(data.status){
+                                        callback({ id: id, text: data.data });
+                                    }else{
+                                        alert("error message ："+data.err);
+                                    }
+                                });
+                            }
+                        }
+                    });
+
+                }
+            }
+        }
+    });
+</script>
+#controlFooter ($action $fieldLayoutItem.fieldDescription $displayParameters.noHeader)

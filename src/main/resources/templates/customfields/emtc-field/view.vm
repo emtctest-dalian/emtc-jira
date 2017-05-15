@@ -1,0 +1,15 @@
+<span class="orderid-view" data-id="$!value"></span>
+<script>
+    AJS.$(document).ready(function() {
+        var fieldValue = "$!value";
+        #set($D = '$')
+        AJS.${D}.post("${req.getContextPath()}/plugins/servlet/emtcserver",{method:"orderName",orderid:fieldValue},function(data){
+            var data = eval('(' +data+')' );
+            if(data.status){
+                AJS.$(".orderid-view").text(data.data);
+            }else{
+                alert("error message ："+data.err);
+            }
+        });
+    });
+</script>
